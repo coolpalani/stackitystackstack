@@ -1,0 +1,99 @@
+---
+puppet_executor_modules_install_method: git
+puppet_executor_modules_source: https://github.com/redhat-openstack/openstack-puppet-modules.git
+puppet_executor_classes:
+  - mysql::server
+  - rabbitmq
+  - keystone::db::mysql
+  - glance::db::mysql
+  - cinder::db::mysql
+  - neutron::db::mysql
+  - keystone
+  - keystone::roles::admin
+  - keystone::endpoint
+  - glance::keystone::auth
+  - glance::api
+  - glance::registry
+  - glance::backend::file
+  - cinder::keystone::auth
+  - cinder::setup_test_volume
+  - cinder
+  - cinder::api
+  - cinder::scheduler
+  - cinder::volume
+  - cinder::volume::iscsi
+  - neutron::keystone::auth
+  - neutron
+  - neutron::server
+  - neutron::plugins::ml2
+  - neutron::agents::ml2::ovs
+puppet_executor_hieradata:
+  rabbitmq::package_provider: 'yum'
+  rabbitmq::delete_guest_user: false
+  rabbitmq::wipe_db_on_cookie_change: true
+  rabbitmq::port: '5672'
+  rabbitmq::package_source: undef
+  rabbitmq::repos_ensure: false
+  rabbitmq_environment:
+    RABBITMQ_NODENAME: "rabbit@%{::hostname}"
+    RABBITMQ_SERVER_ERL_ARGS: '"+K true +A30 +P 1048576 -kernel inet_default_connect_options [{nodelay,true},{raw,6,18,<<5000:64/native>>}] -kernel inet_default_listen_options [{raw,6,18,<<5000:64/native>>}]"'
+  rabbitmq_kernel_variables:
+    inet_dist_listen_min: '35672'
+    inet_dist_listen_max: '35672'
+  rabbitmq_config_variables:
+    tcp_listen_options: '[binary, {packet, raw}, {reuseaddr, true}, {backlog, 128}, {nodelay, true}, {exit_on_close, false}, {keepalive, true}]'
+    cluster_partition_handling: 'pause_minority'
+  rabbitmq::node_ip_address: '192.168.123.10'
+  rabbitmq::default_user: 'guest'
+  rabbitmq::default_pass: 'guest'
+  keystone::db::mysql::user: 'keystone'
+  keystone::db::mysql::password: 'keystone'
+  keystone::db::mysql::dbname: 'keystone'
+  glance::db::mysql::user: 'glance'
+  glance::db::mysql::password: 'glance'
+  glance::db::mysql::dbname: 'glance'
+  cinder::db::mysql::user: 'cinder'
+  cinder::db::mysql::password: 'cinder'
+  cinder::db::mysql::dbname: 'cinder'
+  neutron::db::mysql::user: 'neutron'
+  neutron::db::mysql::password: 'neutron'
+  neutron::db::mysql::dbname: 'neutron'
+  keystone::admin_token: 'asdf1234'
+  keystone::database_connection: 'mysql://keystone:keystone@127.0.0.1/keystone'
+  keystone::roles::admin::email: 'nobody@example.com'
+  keystone::roles::admin::password: 'asdf1234'
+  keystone::endpoint::public_url: 'http://192.168.123.10:5000/v2.0'
+  keystone::endpoint::admin_url: 'http://192.168.123.10:35357/v2.0'
+  glance::keystone::auth::password: 'glance'
+  glance::keystone::auth::public_url: 'http://192.168.123.10:9292'
+  glance::api::keystone_tenant: 'services'
+  glance::api::keystone_user: 'glance'
+  glance::api::keystone_password: 'glance'
+  glance::api::database_connection: 'mysql://glance:glance@127.0.0.1/glance'
+  glance::registry::keystone_tenant: 'services'
+  glance::registry::keystone_user: 'glance'
+  glance::registry::keystone_password: 'glance'
+  glance::registry::database_connection: 'mysql://glance:glance@127.0.0.1/glance'
+  cinder::keystone::auth::password: 'cinder'
+  cinder::keystone::auth::public_url: 'http://192.168.123.10:8776/v1/%(tenant_id)s'
+  cinder::database_connection: 'mysql://cinder:cinder@127.0.0.1/cinder'
+  cinder::rabbit_password: 'guest'
+  cinder::rabbit_host: '192.168.123.10'
+  cinder::api::keystone_password: 'cinder'
+  cinder::api::keystone_user: 'cinder'
+  cinder::api::keystone_auth_host: '192.168.123.10'
+  cinder::api::keystone_auth_port: '35357'
+  cinder::api::keystone_auth_protocol: 'http'
+  cinder::volume::iscsi::iscsi_ip_address: '192.168.123.10'
+  neutron::core_plugin: 'ml2'
+  neutron::keystone::auth::password: 'neutron'
+  neutron::keystone::auth::public_url: 'http://192.168.123.10:9696/'
+  neutron::rabbit_password: 'guest'
+  neutron::rabbit_host: '192.168.123.10'
+  neutron::server::sync_db: true
+  neutron::server::auth_host: '192.168.123.10'
+  neutron::server::auth_password: 'neutron'
+  neutron::server::database_connection: 'mysql://neutron:neutron@127.0.0.1/neutron'
+  neutron::plugins::ml2::type_drivers: ['vxlan']
+  neutron::plugins::ml2::tenant_network_types: ['vxlan']
+  neutron::plugins::ml2::mechanism_drivers: ['openvswitch']

@@ -1,0 +1,2 @@
+[controller]
+default ansible_ssh_host=192.168.123.10 ansible_ssh_port=22 ansible_ssh_user=vagrant

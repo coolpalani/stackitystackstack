@@ -1,0 +1,3 @@
+.vagrant
+roles/ansible-puppet-executor
+roles/geerlingguy.repo-epel

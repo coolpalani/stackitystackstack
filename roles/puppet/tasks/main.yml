@@ -1,0 +1,17 @@
+- name: install puppetlabs-release
+  yum:
+    name: https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
+    state: present
+
+- name: puppet and dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libxml2-devel
+    - libxslt-devel
+    - puppet
+    - python-pip
+    - ruby-devel
+    - rubygems
+    - wget

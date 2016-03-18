@@ -1,0 +1,9 @@
+---
+- name: install rdo repo files
+  get_url: url={{ item }} dest=/etc/yum.repos.d
+  with_items:
+    - http://trunk.rdoproject.org/centos7/current-tripleo/delorean.repo
+    - http://trunk.rdoproject.org/centos7/delorean-deps.repo
+
+- name: disable selinux due to issues
+  selinux: state=permissive policy=targeted

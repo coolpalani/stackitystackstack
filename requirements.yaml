@@ -1,0 +1,5 @@
+- src: https://github.com/ggillies/ansible-puppet-executor
+  version: master
+  name: ansible-puppet-executor
+
+- name: geerlingguy.repo-epel
